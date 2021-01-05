@@ -1,4 +1,5 @@
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from data_helpers import loadDataset, getBatches, sentence2enco
 from model import Seq2SeqModel
 from tqdm import tqdm
@@ -17,7 +18,7 @@ tf.app.flags.DEFINE_string('model_dir', 'model/', 'Path to save model checkpoint
 tf.app.flags.DEFINE_string('model_name', 'chatbot.ckpt', 'File name used for model checkpoints')
 FLAGS = tf.app.flags.FLAGS
 
-data_path = 'E:\PycharmProjects\seq2seq_chatbot\seq2seq_chatbot_new\data\dataset-cornell-length10-filter1-vocabSize40000.pkl'
+data_path = './data/dataset-cornell-length10-filter1-vocabSize40000.pkl'
 word2id, id2word, trainingSamples = loadDataset(data_path)
 
 with tf.Session() as sess:
@@ -26,7 +27,8 @@ with tf.Session() as sess:
     ckpt = tf.train.get_checkpoint_state(FLAGS.model_dir)
     if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
         print('Reloading model parameters..')
-        model.restore(sess, ckpt.model_checkpoint_path)
+        saver = tf.train.import_meta_graph(ckpt.model_checkpoint_path + '.meta')
+        saver.restore(sess, ckpt.model_checkpoint_path)
     else:
         print('Created new model parameters..')
         sess.run(tf.global_variables_initializer())

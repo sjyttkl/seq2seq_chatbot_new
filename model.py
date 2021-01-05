@@ -19,6 +19,8 @@ class Seq2SeqModel():
         #执行模型构建部分的代码
         self.build_model()
 
+    ##定义我们多层LSTM的网络结构
+    ## 这里，不论是encoder还是decoder，我们都定义一个两层的LSTMCell，同时每一个cell都添加上DropoutWrapper
     def _create_rnn_cell(self):
         def single_rnn_cell():
             # 创建单个cell，这里需要注意的是一定要使用一个single_rnn_cell的函数，不然直接把cell放在MultiRNNCell
